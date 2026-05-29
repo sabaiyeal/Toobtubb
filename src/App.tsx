@@ -20,7 +20,7 @@ const WEEK_DAYS_TH = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 
 const MEAL_SLOTS = [
   { key: "breakfast", label: "🌅 เช้า" },
-  { key: "lunch",     label: "☀️ กลางวัน" },
+  { key: "lunch",      label: "☀️ กลางวัน" },
   { key: "dinner",    label: "🌙 เย็น" },
 ];
 const DAILY_GOAL = 10;
@@ -201,8 +201,7 @@ function PatternSummary({ todayKicks }: { todayKicks: Kick[] }) {
           <span className="summary-key">เวลาที่ดิ้นล่าสุด:</span>
           <span className="summary-val">{lastKickTime}</span>
         </div>
-        <div className="
-          summary-row">
+        <div className="summary-row">
           <span className="summary-icon">🍽️</span>
           <span className="summary-key">ช่วงเวลาที่ดิ้นบ่อยสุด:</span>
           <span className="summary-val">{mostActiveMeal}</span>
@@ -217,4 +216,151 @@ function PatternSummary({ todayKicks }: { todayKicks: Kick[] }) {
   );
 }
 
-export { App };
+// ==========================================
+// ตัวประธานใหญ่ของงาน (ฟังก์ชัน App หลักที่คุณหมอตามหา)
+// ==========================================
+export function App() {
+  const [kicks, setKicks] = useState<Kick[]>([]);
+  const [intensity, setIntensity] = useState<number>(2); // ค่าเริ่มต้นคือ "พอดี"
+  const [activeMeal, setActiveMeal] = useState<string>("breakfast");
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [poseCount, setPoseCount] = useState<number>(0);
+  const [floaters, setFloaters] = useState<Floater[]>([]);
+
+  // โหลดข้อมูลตัวอย่างเริ่มต้นเมื่อเปิดแอป
+  useEffect(() => {
+    const mockData: Kick[] = [
+      { time: new Date(Date.now() - 3600000 * 3).toISOString(), intensity: 3, meal: "breakfast" },
+      { time: new Date(Date.now() - 3600000 * 2).toISOString(), intensity: 2, meal: "lunch" },
+      { time: new Date().toISOString(), intensity: 4, meal: "lunch" }
+    ];
+    setKicks(mockData);
+  }, []);
+
+  // ฟังก์ชันเวลากดปุ่มเพื่อบันทึกลูกดิ้น
+  const handleKickClick = async () => {
+    setIsAnimating(true);
+    setPoseCount((prev) => prev + 1);
+
+    const newKick: Kick = {
+      time: new Date().toISOString(),
+      intensity: intensity,
+      meal: activeMeal,
+    };
+
+    setKicks((prev) => [...prev, newKick]);
+
+    // สร้างเอฟเฟกต์หัวใจกระเด้งลอยขึ้นมา
+    const id = Date.now();
+    const newFloater = { id, x: Math.random() * 60 + 20, y: Math.random() * 40 + 30 };
+    setFloaters((prev) => [...prev, newFloater]);
+    setTimeout(() => {
+      setFloaters((prev) => prev.filter((f) => f.id !== id));
+    }, 2000);
+
+    // 2. ยิงบันทึกข้อมูลเข้า Cloud Firebase เผื่อคุณหมอเปิดดูผ่าน LINE
+    try {
+      await addDoc(collection(db, "kicks"), {
+        time: serverTimestamp(),
+        intensity: intensity,
+        meal: activeMeal,
+        device: "Web App"
+      });
+      console.log("บันทึกลง Firebase เรียบร้อย!");
+    } catch (e) {
+      console.error("Firebase error: ", e);
+    }
+  };
+
+  useEffect(() => {
+    if (isAnimating) {
+      const timer = setTimeout(() => setIsAnimating(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isAnimating]);
+
+  const todayStr = new Date().toDateString();
+  const todayKicks = kicks.filter((k) => new Date(k.time).toDateString() === todayStr);
+
+  return (
+    <div className="app-container">
+      <div className="header-card">
+        <h1 className="app-title">ตุ๊บตั๊บ 👶🏻</h1>
+        <p className="app-subtitle">บันทึกการดิ้นของเจ้าตัวเล็ก</p>
+        <div className="date-badge">{formatEnglishDate(new Date())}</div>
+      </div>
+
+      <div className="main-content">
+        {/* บอร์ดแสดงความก้าวหน้า */}
+        <KickGoalBar count={todayKicks.length} />
+
+        {/* โซนปุ่มพุงเด็กสำหรับกดนับ */}
+        <div className="belly-area">
+          <div className="belly-button-circle" onClick={handleKickClick}>
+            <BabyImage isAnimating={isAnimating} currentPose={poseCount} />
+            <div className="ripple-effect"></div>
+          </div>
+          
+          {/* เอฟเฟกต์ลอยละล่องเวลากด */}
+          {floaters.map((f) => (
+            <span
+              key={f.id}
+              className="floating-heart"
+              style={{ left: `${f.x}%`, top: `${f.y}%` }}
+            >
+              {INTENSITY_EMOJIS[intensity]}
+            </span>
+          ))}
+        </div>
+
+        {/* แผงควบคุมเลือกระดับความแรงและช่วงเวลา */}
+        <div className="control-panel">
+          <label className="panel-label">ความแรงของการดิ้น</label>
+          <div className="intensity-selector">
+            {INTENSITY_LABELS.map((label, idx) => (
+              <button
+                key={idx}
+                className={`intensity-btn ${intensity === idx ? "active" : ""}`}
+                onClick={() => setIntensity(idx)}
+              >
+                <span className="btn-emoji">{INTENSITY_EMOJIS[idx]}</span>
+                <span className="btn-text">{label}</span>
+              </button>
+            ))}
+          </div>
+
+          <label className="panel-label" style={{ marginTop: "15px" }}>ช่วงเวลามื้ออาหาร</label>
+          <div className="meal-selector">
+            {MEAL_SLOTS.map((slot) => (
+              <button
+                key={slot.key}
+                className={`meal-btn ${activeMeal === slot.key ? "active" : ""}`}
+                onClick={() => setActiveMeal(slot.key)}
+              >
+                {slot.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* แผงสถิติและสรุปผล */}
+        <div className="stats-section">
+          <PatternSummary todayKicks={todayKicks} />
+          
+          <div className="chart-card">
+            <div className="chart-title">📊 ความถี่ตามมื้ออาหาร</div>
+            <TimeSlotBars kicks={todayKicks} />
+          </div>
+
+          <div className="chart-card">
+            <div className="chart-title">📅 สถิติย้อนหลัง 7 วัน</div>
+            <WeeklyChart kicks={kicks} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ส่งออกเผื่อไฟล์อื่นมาดึงไปใช้แบบไม่มีปีกกาด้วย
+export default App;

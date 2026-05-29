@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&display=swap');
+
 body {
   margin: 0;
   padding: 0;
   background-color: #fcf8f2;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Mitr', system-ui, sans-serif;
   color: #5c4d43;
   display: flex;
   justify-content: center;
@@ -20,225 +22,71 @@ body {
   box-sizing: border-box;
 }
 
-/* Header */
-.header-section {
-  text-align: center;
-  padding: 25px 20px 10px 20px;
-}
+/* ส่วนหัวแอป */
+.header-section { text-align: center; padding: 30px 20px 15px 20px; }
+.main-title { font-size: 24px; font-weight: 500; margin: 0; color: #5c4d43; }
+.sub-title { font-size: 14px; margin: 8px 0 0 0; color: #a39891; }
 
-.main-title {
-  font-size: 24px;
-  margin: 0;
-  color: #5c4d43;
-}
-
-.sub-title {
-  font-size: 13px;
-  margin: 5px 0 0 0;
-  color: #9c8c82;
-}
-
-/* Badges กรอบเส้นประ */
-.info-badges {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  padding: 10px 20px;
-}
-
-.badge {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-  background-color: #ffffff;
-}
-
-.badge-date {
-  border: 2px dashed #c2b5aa;
-  color: #5c4d43;
-}
-
-.badge-ga {
-  border: 2px dashed #f7cbd5;
-  color: #d65a7f;
-}
+/* แถบเส้นประ */
+.info-badges { display: flex; justify-content: center; gap: 12px; padding: 0 20px; margin-bottom: 15px; }
+.badge { padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; background-color: #ffffff; }
+.badge-date { border: 2px dashed #bbaaa0; color: #5c4d43; }
+.badge-ga { border: 2px dashed #f4b6c7; color: #d65a7f; }
 
 /* การ์ดเป้าหมาย */
 .goal-card {
   background-color: #ffffff;
-  margin: 15px 40px;
+  margin: 10px auto;
+  width: 160px;
   padding: 15px;
-  border-radius: 20px;
+  border-radius: 24px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
+.goal-label { font-size: 12px; color: #b56591; font-weight: 500; margin-bottom: 5px; }
+.goal-counter { font-size: 22px; font-weight: 600; color: #b56591; }
+.count-current { font-size: 26px; }
+.goal-dots { display: flex; justify-content: center; gap: 4px; margin-top: 8px; }
+.dot { width: 14px; height: 6px; background-color: #f2edf0; border-radius: 4px; }
+.dot-filled { background-color: #f4b6c7; }
 
-.goal-label {
-  font-size: 13px;
-  color: #d65a7f;
-  font-weight: 600;
-}
+/* โซนรูปน้องเด็ก */
+.baby-container { position: relative; display: flex; justify-content: center; align-items: center; margin: 20px auto; cursor: pointer; width: 100%; max-width: 320px; }
+.baby-womb-img { width: 100%; height: auto; object-fit: contain; transition: transform 0.1s; }
+.baby-container:active .baby-womb-img { transform: scale(0.97); }
 
-.goal-counter {
-  font-size: 26px;
-  font-weight: 700;
-  color: #b56591;
-  margin: 5px 0;
-}
-
-.goal-dots {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin-top: 8px;
-}
-
-.dot {
-  width: 16px;
-  height: 8px;
-  background-color: #f2edf0;
-  border-radius: 4px;
-}
-
-.dot-filled {
-  background-color: #b56591;
-}
-
-/* โซนรูปเด็ก */
-.baby-container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px auto;
-  cursor: pointer;
-  width: 100%;
-  max-width: 300px;
-}
-
-.baby-womb-img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  transition: transform 0.1s;
-}
-
-.baby-container:active .baby-womb-img {
-  transform: scale(0.97);
-}
-
-/* ของตกแต่งรอบๆ */
-.decorations {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.decorations span { position: absolute; font-size: 16px; }
-.star { top: 0; left: 10px; }
-.leaf-left { top: 15px; left: 40px; }
-.leaf-right { top: 20px; right: 40px; }
-.heart { top: 60px; right: 10px; }
+.decorations { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+.dec-icon { position: absolute; font-size: 18px; }
+.star { top: -10px; left: 20px; }
+.leaf-left { top: 20px; left: 60px; }
+.leaf-right { top: 10px; right: 50px; }
+.heart { top: 70px; right: 10px; font-size: 22px; }
+.sparkle { bottom: 20px; right: 20px; }
 
 /* Control Sheet ด้านล่าง */
 .control-sheet {
   background-color: #ffffff;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
-  border: 2px solid #eadecf;
-  padding: 20px;
+  border: 1px solid #f0e6dd;
+  padding: 25px 20px;
   margin-top: 10px;
   flex: 1;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.02);
 }
+.sheet-title { font-size: 15px; font-weight: 500; margin: 0 0 15px 0; text-align: center; color: #5c4d43; }
+.selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.select-btn { background-color: #fdfaf6; border: 1px solid #f0e6dd; border-radius: 12px; padding: 12px; font-size: 14px; color: #5c4d43; cursor: pointer; font-weight: 400; transition: all 0.2s; }
+.select-btn.active { background-color: #f4b6c7; color: white; border-color: #f4b6c7; font-weight: 500; }
 
-.sheet-title {
-  font-size: 14px;
-  margin: 0 0 12px 0;
-  text-align: center;
-  color: #5c4d43;
-}
+/* สรุปผล */
+.report-row { padding: 12px; border-bottom: 1px solid #f5ede4; font-size: 14px; display: flex; justify-content: space-between; }
+.history-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #f0e6dd; }
+.empty-text { text-align: center; color: #9c8c82; font-size: 13px; }
 
-.selector-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.select-btn {
-  background-color: #fdfaf6;
-  border: 1px solid #eadecf;
-  border-radius: 15px;
-  padding: 12px;
-  font-size: 13px;
-  color: #5c4d43;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.select-btn.active {
-  background-color: #f2e3d5;
-  border-color: #c2b5aa;
-  font-weight: 600;
-}
-
-/* สรุปผล & ประวัติ */
-.report-row {
-  padding: 12px;
-  border-bottom: 1px solid #f5ede4;
-  font-size: 14px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.history-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  padding: 8px 0;
-  border-bottom: 1px dashed #eadecf;
-}
-
-.empty-text {
-  text-align: center;
-  color: #9c8c82;
-  font-size: 13px;
-}
-
-/* Bottom Navigation */
-.bottom-nav {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 75px;
-  background-color: #ffffff;
-  border-top: 1px solid #ebdccb;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding-bottom: 10px;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  opacity: 0.5;
-  transition: opacity 0.2s;
-}
-
-.nav-item.active {
-  opacity: 1;
-}
-
-.nav-icon {
-  font-size: 20px;
-  margin-bottom: 4px;
-}
-
-.nav-text {
-  font-size: 11px;
-  font-weight: 600;
-}
+/* แถบเมนูด้านล่าง */
+.bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background-color: #ffffff; border-top: 1px solid #f0e6dd; display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
+.nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; opacity: 0.4; transition: opacity 0.2s; gap: 4px; }
+.nav-item.active { opacity: 1; color: #5c4d43; }
+.nav-icon { font-size: 24px; }
+.nav-text { font-size: 12px; font-weight: 500; }

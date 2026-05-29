@@ -1,323 +1,244 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Mitr:wght@300;400;500;600&display=swap');
-
-:root {
-  --primary-pink: #ffb1c1;
-  --primary-light: #fff0f3;
-  --bg-color: #fdf6f7;
-  --text-color: #4a3b42;
-}
-
 body {
   margin: 0;
-  font-family: 'Fredoka', 'Mitr', sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  padding: 0;
+  background-color: #fcf8f2;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #5c4d43;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding: 0;
 }
 
-#root {
+.app-container {
   width: 100%;
   max-width: 430px;
-  background: #ffffff;
   min-height: 100vh;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  background-color: #fcf8f2;
   display: flex;
   flex-direction: column;
+  position: relative;
+  padding-bottom: 90px;
+  box-sizing: border-box;
 }
 
 /* Header */
-.header {
-  background: linear-gradient(135deg, #ffb1c1 0%, #ffc5d3 100%);
-  color: white;
-  padding: 30px 20px;
+.header-section {
   text-align: center;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
+  padding: 25px 20px 10px 20px;
 }
 
-.header h1 {
+.main-title {
+  font-size: 24px;
   margin: 0;
-  font-size: 28px;
+  color: #5c4d43;
+}
+
+.sub-title {
+  font-size: 13px;
+  margin: 5px 0 0 0;
+  color: #9c8c82;
+}
+
+/* Badges กรอบเส้นประ */
+.info-badges {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 20px;
+}
+
+.badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: #ffffff;
+}
+
+.badge-date {
+  border: 2px dashed #c2b5aa;
+  color: #5c4d43;
+}
+
+.badge-ga {
+  border: 2px dashed #f7cbd5;
+  color: #d65a7f;
+}
+
+/* การ์ดเป้าหมาย */
+.goal-card {
+  background-color: #ffffff;
+  margin: 15px 40px;
+  padding: 15px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.goal-label {
+  font-size: 13px;
+  color: #d65a7f;
   font-weight: 600;
 }
 
-.header p {
-  margin: 5px 0 15px 0;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.date-badge {
-  background: rgba(255, 255, 255, 0.3);
-  padding: 4px 15px;
-  border-radius: 20px;
-  font-size: 12px;
-  display: inline-block;
-}
-
-/* Main Content */
-.main-content {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Card Base */
-.card {
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(255, 177, 193, 0.1);
-  border: 1px solid #fff0f3;
-}
-
-/* Goal Section */
-.goal-section {
-  text-align: center;
-}
-
-.goal-title {
-  font-size: 14px;
-  color: #8a7a82;
-  margin-bottom: 5px;
-}
-
-.goal-count {
-  font-size: 24px;
+.goal-counter {
+  font-size: 26px;
   font-weight: 700;
-  color: #ff6b8b;
-  margin-bottom: 10px;
+  color: #b56591;
+  margin: 5px 0;
 }
 
-.progress-container {
-  background: #f0e6eb;
-  border-radius: 10px;
-  height: 12px;
-  width: 100%;
-  overflow: hidden;
-}
-
-.progress-bar {
-  background: linear-gradient(90deg, #ffb1c1 0%, #ff6b8b 100%);
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.3s ease;
-}
-
-/* Kick Button */
-.kick-btn-container {
+.goal-dots {
   display: flex;
   justify-content: center;
-  margin: 10px 0;
+  gap: 4px;
+  margin-top: 8px;
 }
 
-.kick-circle-btn {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #ffffff 0%, #fff0f3 100%);
-  border: 6px solid #ffcbd7;
-  box-shadow: 0 8px 20px rgba(255, 177, 193, 0.3);
-  cursor: pointer;
+.dot {
+  width: 16px;
+  height: 8px;
+  background-color: #f2edf0;
+  border-radius: 4px;
+}
+
+.dot-filled {
+  background-color: #b56591;
+}
+
+/* โซนรูปเด็ก */
+.baby-container {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 20px auto;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+.baby-womb-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
   transition: transform 0.1s;
 }
 
-.kick-circle-btn:active {
-  transform: scale(0.95);
+.baby-container:active .baby-womb-img {
+  transform: scale(0.97);
 }
 
-.kick-circle-btn img {
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
+/* ของตกแต่งรอบๆ */
+.decorations {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.decorations span { position: absolute; font-size: 16px; }
+.star { top: 0; left: 10px; }
+.leaf-left { top: 15px; left: 40px; }
+.leaf-right { top: 20px; right: 40px; }
+.heart { top: 60px; right: 10px; }
+
+/* Control Sheet ด้านล่าง */
+.control-sheet {
+  background-color: #ffffff;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  border: 2px solid #eadecf;
+  padding: 20px;
+  margin-top: 10px;
+  flex: 1;
 }
 
-/* Selectors */
-.selector-label {
+.sheet-title {
   font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 10px;
-  display: block;
-}
-
-.intensity-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
-.intensity-item {
-  background: #fff9fa;
-  border: 1px solid #ffe6eb;
-  border-radius: 12px;
-  padding: 8px 4px;
+  margin: 0 0 12px 0;
   text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
+  color: #5c4d43;
 }
 
-.intensity-item.active {
-  background: #fff0f3;
-  border-color: #ffb1c1;
-  transform: translateY(-2px);
-}
-
-.intensity-item .emoji {
-  font-size: 18px;
-  display: block;
-  margin-bottom: 2px;
-}
-
-.intensity-item .text {
-  font-size: 11px;
-  color: #8a7a82;
-}
-
-.meal-grid {
+.selector-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
-.meal-item {
-  background: #fff9fa;
-  border: 1px solid #ffe6eb;
-  border-radius: 12px;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
+.select-btn {
+  background-color: #fdfaf6;
+  border: 1px solid #eadecf;
+  border-radius: 15px;
+  padding: 12px;
   font-size: 13px;
-  transition: all 0.2s;
+  color: #5c4d43;
+  cursor: pointer;
+  font-weight: 500;
 }
 
-.meal-item.active {
-  background: linear-gradient(135deg, #ffb1c1 0%, #ff94b1 100%);
-  color: white;
-  border-color: #ffb1c1;
-}
-
-/* History / Stats */
-.stats-title {
-  font-size: 15px;
+.select-btn.active {
+  background-color: #f2e3d5;
+  border-color: #c2b5aa;
   font-weight: 600;
-  margin: 0 0 15px 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
-.history-list {
+/* สรุปผล & ประวัติ */
+.report-row {
+  padding: 12px;
+  border-bottom: 1px solid #f5ede4;
+  font-size: 14px;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
 }
 
 .history-item {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  padding-bottom: 8px;
-  border-bottom: 1px dashed #ffe6eb;
+  padding: 8px 0;
+  border-bottom: 1px dashed #eadecf;
 }
 
-.history-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-/* Meal Chart */
-.chart-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.chart-row {
-  display: flex;
-  align-items: center;
+.empty-text {
+  text-align: center;
+  color: #9c8c82;
   font-size: 13px;
 }
 
-.chart-label {
-  width: 60px;
-}
-
-.chart-bar-bg {
-  flex: 1;
-  background: #fff9fa;
-  height: 20px;
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-}
-
-.chart-bar-fill {
-  background: linear-gradient(90deg, #ffc5d3 0%, #ffb1c1 100%);
-  height: 100%;
-  border-radius: 10px;
-}
-
-.chart-value {
+/* Bottom Navigation */
+.bottom-nav {
   position: absolute;
-  right: 10px;
-  top: 5px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #ff6b8b;
-  line-height: 1;
-}
-
-/* Week Chart */
-.week-chart-container {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 75px;
+  background-color: #ffffff;
+  border-top: 1px solid #ebdccb;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  height: 80px;
-  padding-top: 10px;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 10px;
 }
 
-.week-column {
+.nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 12%;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
 }
 
-.week-bar-bg {
-  background: #fff9fa;
-  width: 12px;
-  height: 60px;
-  border-radius: 6px;
-  display: flex;
-  align-items: flex-end;
+.nav-item.active {
+  opacity: 1;
 }
 
-.week-bar-fill {
-  background: #ffcbd7;
-  width: 100%;
-  border-radius: 6px;
-  transition: height 0.3s;
+.nav-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
 }
 
-.week-bar-fill.today {
-  background: linear-gradient(0deg, #ff6b8b 0%, #ffb1c1 100%);
-}
-
-.week-label {
+.nav-text {
   font-size: 11px;
-  margin-top: 4px;
-  color: #8a7a82;
-}
-
-.week-label.today {
-  color: #ff6b8b;
   font-weight: 600;
 }

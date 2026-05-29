@@ -217,4 +217,4 @@ function PatternSummary({ todayKicks }: { todayKicks: Kick[] }) {
   );
 }
 
-export default App;  
+export { App };

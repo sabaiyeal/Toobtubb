@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import "./index.css";
+import { saveKick, loadKicks, saveDueDate } from "./lib/kicks";
 
 const INTENSITY_LABELS = ["เบามาก", "เบา", "พอดี", "แรง", "แรงมาก"];
 const INTENSITY_EMOJIS = ["🍃", "⭐", "✨", "💪", "🔥"];
@@ -250,14 +251,11 @@ function SetupModal({ onSave, onClose }: { onSave: (date: string) => void; onClo
 }
 
 export default function App() {
-  const [kicks, setKicks] = useState<Kick[]>(() => {
-    try {
-      const saved = localStorage.getItem("kick-counter-data");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+const [kicks, setKicks] = useState<Kick[]>([]);
+
+useEffect(() => {
+  loadKicks().then(setKicks);
+}, []);
 
   const [dueDate, setDueDate] = useState<string>(() => {
     return localStorage.getItem("kick-counter-duedate") || "";
@@ -286,15 +284,13 @@ export default function App() {
   }, []);
 
   // Persist kicks to localStorage
-  useEffect(() => {
-    localStorage.setItem("kick-counter-data", JSON.stringify(kicks));
-  }, [kicks]);
 
-  function saveDueDate(date: string) {
-    setDueDate(date);
-    localStorage.setItem("kick-counter-duedate", date);
-    setShowSetup(false);
-  }
+
+function saveDueDateHandler(date: string) {
+  setDueDate(date);
+  saveDueDate(date); 
+  setShowSetup(false);
+}
 
   const todayKicks = kicks.filter((k) => {
     const d = new Date(k.time);
@@ -307,8 +303,9 @@ export default function App() {
   const last7DaysKicks = kicks.filter((k) => new Date(k.time) >= sevenDaysAgo);
 
   function handleKick(e: React.MouseEvent<HTMLButtonElement>) {
-    const newKick: Kick = { time: new Date().toISOString(), intensity: selectedIntensity, meal: selectedMeal };
-    setKicks((prev) => [...prev, newKick]);
+const newKick: Kick = { time: new Date().toISOString(), intensity: selectedIntensity, meal: selectedMeal };
+setKicks((prev) => [...prev, newKick]);
+saveKick(newKick);
     setPoseIndex((prev) => prev + 1);
     setIsAnimating(true);
     setTimeout(() => setIsAnimating(false), 400);

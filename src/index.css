@@ -1,386 +1,323 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Mitr:wght@300;400;500;600&display=swap');
 
 :root {
-  font-family: 'Inter', 'Kanit', system-ui, sans-serif;
-  background-color: #fff5f8;
-  color: #4a3b42;
+  --primary-pink: #ffb1c1;
+  --primary-light: #fff0f3;
+  --bg-color: #fdf6f7;
+  --text-color: #4a3b42;
 }
 
 body {
   margin: 0;
-  padding: 0;
-  min-height: 100vh;
+  font-family: 'Fredoka', 'Mitr', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   display: flex;
   justify-content: center;
-  background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 100%);
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 0;
 }
 
-/* Container คุมตรงกลางมือถือ */
-.app-container {
+#root {
   width: 100%;
-  max-width: 480px;
+  max-width: 430px;
+  background: #ffffff;
   min-height: 100vh;
-  background-color: #ffffff;
-  box-shadow: 0 10px 25px rgba(244, 143, 177, 0.15);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  padding-bottom: 40px;
 }
 
-/* ส่วนหัว */
-.header-card {
-  background: linear-gradient(135deg, #f48fb1 0%, #ffb1c1 100%);
+/* Header */
+.header {
+  background: linear-gradient(135deg, #ffb1c1 0%, #ffc5d3 100%);
   color: white;
   padding: 30px 20px;
   text-align: center;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
-  box-shadow: 0 4px 15px rgba(244, 143, 177, 0.3);
 }
 
-.app-title {
-  font-size: 2.2rem;
-  font-weight: 800;
-  margin: 0 0 5px 0;
-  text-shadow: 1px 2px 4px rgba(0,0,0,0.1);
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
 }
 
-.app-subtitle {
-  font-size: 1rem;
+.header p {
+  margin: 5px 0 15px 0;
+  font-size: 14px;
   opacity: 0.9;
-  margin: 0 0 15px 0;
 }
 
 .date-badge {
-  display: inline-block;
-  background-color: rgba(255, 255, 255, 0.25);
-  padding: 6px 16px;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px 15px;
   border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  backdrop-filter: blur(5px);
+  font-size: 12px;
+  display: inline-block;
 }
 
+/* Main Content */
 .main-content {
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-/* แถบเป้าหมายวันนี้ */
-.goal-bar-wrap {
-  background-color: #fffbfc;
-  border: 1px solid #ffe1ec;
-  border-radius: 20px;
-  padding: 15px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-}
-
-.goal-bar-label {
-  font-size: 0.9rem;
-  color: #88727d;
-  font-weight: 500;
-}
-
-.goal-bar-big-count {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #d81b60;
-  margin: 5px 0 10px 0;
-}
-
-.goal-bar-track {
-  height: 14px;
-  background-color: #f0e6eb;
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-}
-
-.goal-bar-fill {
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* โซนกดปุ่มพุงเด็กนับลูกดิ้น */
-.belly-area {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  margin: 10px 0;
-}
-
-.belly-button-circle {
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, #fff0f5 0%, #ffdde5 100%);
-  border: 8px solid #ffb1c1;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
-  box-shadow: 0 8px 25px rgba(244, 143, 177, 0.4);
-  transition: all 0.2s ease;
-  overflow: hidden;
-}
-
-.belly-button-circle:active {
-  transform: scale(0.95);
-  box-shadow: 0 4px 10px rgba(244, 143, 177, 0.2);
-}
-
-.belly-svg {
-  width: 110px;
-  height: 110px;
-  object-fit: contain;
-  transition: transform 0.1s ease;
-}
-
-/* แอนิเมชันลูกดิ้นดุ๊กดิ๊ก */
-.kick-anim {
-  animation: popImpact 0.4s ease-out;
-}
-
-@keyframes popImpact {
-  0% { transform: scale(1); }
-  30% { transform: scale(1.25) rotate(5deg); }
-  50% { transform: scale(0.9) rotate(-5deg); }
-  100% { transform: scale(1) rotate(0deg); }
-}
-
-/* เอฟเฟกต์อีโมจิความแรงลอยกระเด้งตอนกด */
-.floating-heart {
-  position: absolute;
-  font-size: 2.5rem;
-  animation: floatUp 1.5s forwards cubic-bezier(0.18, 0.89, 0.32, 1.28);
-  pointer-events: none;
-  z-index: 10;
-}
-
-@keyframes floatUp {
-  0% { transform: translate(-50%, 0) scale(0.5); opacity: 0; }
-  15% { opacity: 1; }
-  100% { transform: translate(-50%, -120px) scale(1.2); opacity: 0; }
-}
-
-/* แผงควบคุมเลือกระดับความแรงและช่วงเวลา */
-.control-panel {
-  background-color: white;
-  border-radius: 20px;
-  padding: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-  border: 1px solid #f5ecef;
-}
-
-.panel-label {
-  display: block;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #614e56;
-  margin-bottom: 10px;
-}
-
-.intensity-selector {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-}
-
-.intensity-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 8px 4px;
-  background-color: #fdf8fa;
-  border: 1px solid #f0e2e6;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.intensity-btn.active {
-  background-color: #fff0f3;
-  border-color: #f48fb1;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(244, 143, 177, 0.2);
-}
-
-.btn-emoji { font-size: 1.3rem; margin-bottom: 4px; }
-.btn-text { font-size: 0.7rem; color: #7a666f; font-weight: 500; }
-.intensity-btn.active .btn-text { color: #d81b60; font-weight: 600; }
-
-.meal-selector {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.meal-btn {
-  padding: 10px;
-  background-color: #fdf8fa;
-  border: 1px solid #f0e2e6;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #7a666f;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.meal-btn.active {
-  background: linear-gradient(135deg, #ffb1c1 0%, #f48fb1 100%);
-  color: white;
-  border-color: #f48fb1;
-  font-weight: 600;
-}
-
-/* ส่วนแสดงการสรุปผลและชาร์ตสถิติ */
-.stats-section {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.summary-card, .chart-card {
-  background-color: white;
-  border-radius: 22px;
-  padding: 18px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-  border: 1px solid #f5ecef;
+/* Card Base */
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(255, 177, 193, 0.1);
+  border: 1px solid #fff0f3;
 }
 
-.summary-title, .chart-title {
-  font-size: 1.05rem;
+/* Goal Section */
+.goal-section {
+  text-align: center;
+}
+
+.goal-title {
+  font-size: 14px;
+  color: #8a7a82;
+  margin-bottom: 5px;
+}
+
+.goal-count {
+  font-size: 24px;
   font-weight: 700;
-  color: #4a3b42;
-  margin-bottom: 15px;
+  color: #ff6b8b;
+  margin-bottom: 10px;
+}
+
+.progress-container {
+  background: #f0e6eb;
+  border-radius: 10px;
+  height: 12px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #ffb1c1 0%, #ff6b8b 100%);
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+/* Kick Button */
+.kick-btn-container {
   display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.kick-circle-btn {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #fff0f3 100%);
+  border: 6px solid #ffcbd7;
+  box-shadow: 0 8px 20px rgba(255, 177, 193, 0.3);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
   align-items: center;
+  transition: transform 0.1s;
+}
+
+.kick-circle-btn:active {
+  transform: scale(0.95);
+}
+
+.kick-circle-btn img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+/* Selectors */
+.selector-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.intensity-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
 }
 
-.summary-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.intensity-item {
+  background: #fff9fa;
+  border: 1px solid #ffe6eb;
+  border-radius: 12px;
+  padding: 8px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.summary-row {
-  display: flex;
-  align-items: center;
-  font-size: 0.95rem;
-  border-bottom: 1px dashed #f5ecef;
-  padding-bottom: 8px;
+.intensity-item.active {
+  background: #fff0f3;
+  border-color: #ffb1c1;
+  transform: translateY(-2px);
 }
 
-.summary-row:last-child { border-none: none; padding-bottom: 0; }
-.summary-icon { margin-right: 8px; }
-.summary-key { color: #7a666f; flex-grow: 1; }
-.summary-val { font-weight: 600; color: #4a3b42; }
-
-/* ดีไซน์ชาร์ตแท่งมื้ออาหาร */
-.timeslot-bars {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.intensity-item .emoji {
+  font-size: 18px;
+  display: block;
+  margin-bottom: 2px;
 }
 
-.timeslot-row {
-  display: flex;
-  align-items: center;
+.intensity-item .text {
+  font-size: 11px;
+  color: #8a7a82;
+}
+
+.meal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
-.timeslot-label {
-  width: 75px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #614e56;
+.meal-item {
+  background: #fff9fa;
+  border: 1px solid #ffe6eb;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
 }
 
-.timeslot-track {
-  flex-grow: 1;
-  height: 24px;
-  background-color: #faf0f3;
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
+.meal-item.active {
+  background: linear-gradient(135deg, #ffb1c1 0%, #ff94b1 100%);
+  color: white;
+  border-color: #ffb1c1;
+}
+
+/* History / Stats */
+.stats-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
   display: flex;
   align-items: center;
+  gap: 6px;
 }
 
-.timeslot-fill {
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #ffe6eb;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Meal Chart */
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chart-row {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+
+.chart-label {
+  width: 60px;
+}
+
+.chart-bar-bg {
+  flex: 1;
+  background: #fff9fa;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.chart-bar-fill {
+  background: linear-gradient(90deg, #ffc5d3 0%, #ffb1c1 100%);
   height: 100%;
-  border-radius: 12px;
-  transition: width 0.4s ease;
+  border-radius: 10px;
 }
 
-.timeslot-fill-soft { background-color: #ffcbd7; }
-.timeslot-fill-active { background: linear-gradient(90deg, #ff94b1, #f48fb1); }
-.timeslot-count {
+.chart-value {
   position: absolute;
-  right: 12px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #d81b60;
+  right: 10px;
+  top: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ff6b8b;
+  line-height: 1;
 }
 
-/* ชาร์ตแท่งย้อนหลัง 7 วัน */
-.week-chart {
-  padding-top: 10px;
-}
-
-.week-bars {
+/* Week Chart */
+.week-chart-container {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  height: 100px;
+  height: 80px;
+  padding-top: 10px;
 }
 
-.week-bar-col {
+.week-column {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 12%;
-  height: 100%;
-  justify-content: flex-end;
 }
 
-.week-bar-track {
-  width: 14px;
-  height: 75px;
-  background-color: #faf0f3;
-  border-radius: 10px;
+.week-bar-bg {
+  background: #fff9fa;
+  width: 12px;
+  height: 60px;
+  border-radius: 6px;
   display: flex;
   align-items: flex-end;
-  overflow: hidden;
 }
 
 .week-bar-fill {
+  background: #ffcbd7;
   width: 100%;
-  background-color: #ffcbd7;
-  border-radius: 10px;
-  transition: height 0.4s ease;
+  border-radius: 6px;
+  transition: height 0.3s;
 }
 
-.week-bar-today {
-  background: linear-gradient(0deg, #f48fb1, #ff94b1);
+.week-bar-fill.today {
+  background: linear-gradient(0deg, #ff6b8b 0%, #ffb1c1 100%);
 }
 
-.week-day-label {
-  font-size: 0.75rem;
-  color: #9e8792;
-  margin-top: 6px;
-  font-weight: 500;
+.week-label {
+  font-size: 11px;
+  margin-top: 4px;
+  color: #8a7a82;
 }
 
-.week-day-today {
-  color: #d81b60;
-  font-weight: 700;
+.week-label.today {
+  color: #ff6b8b;
+  font-weight: 600;
 }

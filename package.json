@@ -69,7 +69,7 @@
     "vite": "^7.3.2",
     "wouter": "^3.3.5",
     "zod": "^3.2.57",
-    "firebase": "^10.0.0",
-    "html2canvas": "^1.4.1"
+    "firebase": "^11.0.0",
+    "html2canvas":"^1.4.1"
   }
 }  

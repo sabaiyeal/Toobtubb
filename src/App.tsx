@@ -202,3 +202,19 @@ function PatternSummary({ todayKicks }: { todayKicks: Kick[] }) {
           <span className="summary-val">{lastKickTime}</span>
         </div>
         <div className="
+          summary-row">
+          <span className="summary-icon">🍽️</span>
+          <span className="summary-key">ช่วงเวลาที่ดิ้นบ่อยสุด:</span>
+          <span className="summary-val">{mostActiveMeal}</span>
+        </div>
+        <div className="summary-row">
+          <span className="summary-icon">⚡</span>
+          <span className="summary-key">ความแรงเฉลี่ย:</span>
+          <span className="summary-val">{avgIntensity} / 5</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;

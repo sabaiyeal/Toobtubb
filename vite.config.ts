@@ -8,20 +8,24 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "src"),
     },
     dedupe: ["react", "react-dom"],
   },
+
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist"),
+    outDir: "dist",
     emptyOutDir: true,
   },
+
   server: {
     host: "0.0.0.0",
     allowedHosts: true,
   },
+
   preview: {
     host: "0.0.0.0",
     allowedHosts: true,

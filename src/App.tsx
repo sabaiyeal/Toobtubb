@@ -198,14 +198,14 @@ function PatternSummary({ todayKicks }: { todayKicks: Kick[] }) {
         </div>
         <div className="summary-row">
           <span className="summary-icon">💪</span>
-          <span className="summary-key">ความรุนแรงเฉลี่ย:</span>
+          <span className="summary-key">ความแรงเฉลี่ย:</span>
           <span className="summary-val">{avgIntensity !== "—" ? `${avgIntensity} / 5 ⭐` : "—"}</span>
         </div>
       </div>
       <div className={`summary-insight ${goalReached ? "summary-insight-done" : ""}`}>
         {goalReached
           ? "💡 Mission completed! วันนี้เจ้าตัวน้อยดิ้นครบ 10 ครั้งแล้วค่ะ 🎉"
-          : "💡 หากรู้สึกว่าลูกดิ้นน้อยลงหรือผิดไปจากเดิม ควรปรึกษาแพทย์เพื่อความสบายใจนะคะ"}
+          : "💡 หากรู้สึกว่าลูกดิ้นน้อยลงหรือผิดปกติไปจากเดิม ควรปรึกษาแพทย์เพิ่มเติมเพื่อความสบายใจนะคะ"}
       </div>
     </div>
   );

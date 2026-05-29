@@ -1,22 +1,14 @@
 import React, { useState } from "react";
 
-interface KickRecord {
-  id: string;
-  time: string;
-  mealSlot: string;
-  intensity: string;
-}
-
-function App() {
-  const [kicks, setKicks] = useState<KickRecord[]>([]);
-  const [intensity, setIntensity] = useState<string>("พอดี");
-  const [mealSlot, setMealSlot] = useState<string>("กลางวัน");
-  const [currentTab, setCurrentTab] = useState<"บันทึก" | "สรุปผล">("บันทึก");
+export default function App() {
+  const [kicks, setKicks] = useState([]);
+  const [intensity, setIntensity] = useState("พอดี");
+  const [mealSlot, setMealSlot] = useState("กลางวัน");
+  const [currentTab, setCurrentTab] = useState("บันทึก");
 
   const todayCount = kicks.length;
   const goalCount = 10;
 
-  // ฟังก์ชันกดที่ตัวน้องเด็กเพื่อบันทึกการดิ้น
   const handleKickClick = () => {
     const now = new Date();
     const timeString = now.toLocaleTimeString("th-TH", {
@@ -24,7 +16,7 @@ function App() {
       minute: "2-digit",
     });
 
-    const newKick: KickRecord = {
+    const newKick = {
       id: Math.random().toString(36).substr(2, 9),
       time: timeString,
       mealSlot: mealSlot,
@@ -34,8 +26,7 @@ function App() {
     setKicks([newKick, ...kicks]);
   };
 
-  // คำนวณสถิติสำหรับหน้าสรุปผล
-  const getMealCount = (slot: string) => kicks.filter((k) => k.mealSlot === slot).length;
+  const getMealCount = (slot) => kicks.filter((k) => k.mealSlot === slot).length;
 
   return (
     <div className="app-container">
@@ -51,19 +42,17 @@ function App() {
         <div className="badge badge-ga">🤰 GA 32w 0d</div>
       </div>
 
-      {/* หน้าแรก: บันทึก */}
       {currentTab === "บันทึก" && (
         <div className="tab-content">
           {/* การ์ดเป้าหมาย */}
           <div className="goal-card">
             <div className="goal-label">เป้าหมายวันนี้</div>
-            <div className="goal-counter">{todayCount} / {goalCount} ครั้ง</div>
+            <div className="goal-counter">
+              <span className="count-current">{todayCount}</span> / {goalCount} ครั้ง
+            </div>
             <div className="goal-dots">
               {[...Array(goalCount)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className={`dot ${i < todayCount ? "dot-filled" : ""}`}
-                ></div>
+                <div key={i} className={`dot ${i < todayCount ? "dot-filled" : ""}`}></div>
               ))}
             </div>
           </div>
@@ -71,24 +60,24 @@ function App() {
           {/* โซนรูปน้องเด็กสำหรับกดนับ */}
           <div className="baby-container" onClick={handleKickClick}>
             <div className="decorations">
-              <span className="star">⭐</span>
-              <span className="leaf-left">🌿</span>
-              <span className="leaf-right">🌿</span>
-              <span className="heart">💖</span>
+              <span className="dec-icon star">⭐</span>
+              <span className="dec-icon leaf-left">🌿</span>
+              <span className="dec-icon leaf-right">🌿</span>
+              <span className="dec-icon heart">💖</span>
+              <span className="dec-icon sparkle">✨</span>
             </div>
-            {/* ดึงรูปน้องนอนหลับปุ๋ยจากโฟลเดอร์โปรเจกต์คุณหมอ */}
+            {/* แก้ชื่อรูปภาพให้ตรงกับไฟล์ที่มีในโปรเจกต์ของคุณหมอ */}
             <img 
               src="/image_60.png" 
               alt="Baby sleeping in womb" 
               className="baby-womb-img"
               onError={(e) => {
-                // กันเหนียวถ้ารูปไม่ขึ้น ให้ใช้ URL สากลแทนครับ
                 e.currentTarget.src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/main/Emojis/People/Baby.png";
               }}
             />
           </div>
 
-          {/* ฟอร์มเลือกช่วงเวลาด้านล่าง */}
+          {/* ฟอร์มเลือกช่วงเวลา */}
           <div className="control-sheet">
             <h3 className="sheet-title">⏱️ ช่วงเวลาที่นับลูกดิ้น</h3>
             <div className="selector-grid">
@@ -102,24 +91,10 @@ function App() {
                 </button>
               ))}
             </div>
-
-            <h3 className="sheet-title" style={{ marginTop: "15px" }}>✨ ความแรง</h3>
-            <div className="selector-grid intensity-grid">
-              {["เบา", "พอดี", "แรง"].map((level) => (
-                <button
-                  key={level}
-                  className={`select-btn ${intensity === level ? "active" : ""}`}
-                  onClick={() => setIntensity(level)}
-                >
-                  {level}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
       )}
 
-      {/* หน้าสอง: สรุปผล */}
       {currentTab === "สรุปผล" && (
         <div className="tab-content">
           <div className="control-sheet" style={{ marginTop: "20px" }}>
@@ -147,7 +122,7 @@ function App() {
         </div>
       )}
 
-      {/* แถบเมนูด้านล่างสุด (Bottom Navigation) */}
+      {/* แถบเมนูด้านล่างสุด */}
       <div className="bottom-nav">
         <div 
           className={`nav-item ${currentTab === "บันทึก" ? "active" : ""}`}
@@ -167,5 +142,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 interface KickRecord {
   id: string;
@@ -7,22 +7,17 @@ interface KickRecord {
   intensity: string;
 }
 
-export function App() {
+function App() {
   const [kicks, setKicks] = useState<KickRecord[]>([]);
   const [intensity, setIntensity] = useState<string>("พอดี");
   const [mealSlot, setMealSlot] = useState<string>("กลางวัน");
-  const [isKicking, setIsKicking] = useState<boolean>(false);
+  const [currentTab, setCurrentTab] = useState<"บันทึก" | "สรุปผล">("บันทึก");
 
-  // คำนวณจำนวนการดิ้นของวันนี้
   const todayCount = kicks.length;
   const goalCount = 10;
-  const progressPercent = Math.min((todayCount / goalCount) * 100, 100);
 
-  // ฟังก์ชันกดนับลูกดิ้น
+  // ฟังก์ชันกดที่ตัวน้องเด็กเพื่อบันทึกการดิ้น
   const handleKickClick = () => {
-    setIsKicking(true);
-    setTimeout(() => setIsKicking(false), 400);
-
     const now = new Date();
     const timeString = now.toLocaleTimeString("th-TH", {
       hour: "2-digit",
@@ -39,157 +34,138 @@ export function App() {
     setKicks([newKick, ...kicks]);
   };
 
-  // นับจำนวนแยกตามมื้ออาหาร
+  // คำนวณสถิติสำหรับหน้าสรุปผล
   const getMealCount = (slot: string) => kicks.filter((k) => k.mealSlot === slot).length;
-  const morningCount = getMealCount("เช้า");
-  const afternoonCount = getMealCount("กลางวัน");
-  const eveningCount = getMealCount("เย็น");
-  const maxMealCount = Math.max(morningCount, afternoonCount, eveningCount, 1);
 
   return (
-    <>
-      {/* ส่วนหัวของแอป */}
-      <div className="header">
-        <h1>ตุ๊บตั๊บ</h1>
-        <p>บันทึกการดิ้นของเจ้าตัวเล็ก</p>
-        <div className="date-badge">29 MAY 26</div>
+    <div className="app-container">
+      {/* ส่วนหัวแอป */}
+      <div className="header-section">
+        <h1 className="main-title">ตุ๊บตั๊บ ตุ๊บตั๊บ! 👶🏻</h1>
+        <p className="sub-title">วันนี้เจ้าตัวน้อยดิ้นไปกี่ครั้งแล้วนะ 🤍</p>
       </div>
 
-      {/* เนื้อหาหลักข้างใน */}
-      <div className="main-content">
-        {/* การ์ดเป้าหมายวันนี้ */}
-        <div className="card goal-section">
-          <div className="goal-title">เป้าหมายวันนี้</div>
-          <div className="goal-count">
-            {todayCount} / {goalCount} ครั้ง
-          </div>
-          <div className="progress-container">
-            <div className="progress-bar" style={{ width: `${progressPercent}%` }}></div>
-          </div>
-        </div>
+      {/* แถบข้อมูล วันที่ & GA */}
+      <div className="info-badges">
+        <div className="badge badge-date">📅 29 MAY 26</div>
+        <div className="badge badge-ga">🤰 GA 32w 0d</div>
+      </div>
 
-        {/* ปุ่มวงกลมพุงน้องเด็กสำหรับกดนับ */}
-        <div className="kick-btn-container">
-          <div className={`kick-circle-btn ${isKicking ? "kick-anim" : ""}`} onClick={handleKickClick}>
+      {/* หน้าแรก: บันทึก */}
+      {currentTab === "บันทึก" && (
+        <div className="tab-content">
+          {/* การ์ดเป้าหมาย */}
+          <div className="goal-card">
+            <div className="goal-label">เป้าหมายวันนี้</div>
+            <div className="goal-counter">{todayCount} / {goalCount} ครั้ง</div>
+            <div className="goal-dots">
+              {[...Array(goalCount)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`dot ${i < todayCount ? "dot-filled" : ""}`}
+                ></div>
+              ))}
+            </div>
+          </div>
+
+          {/* โซนรูปน้องเด็กสำหรับกดนับ */}
+          <div className="baby-container" onClick={handleKickClick}>
+            <div className="decorations">
+              <span className="star">⭐</span>
+              <span className="leaf-left">🌿</span>
+              <span className="leaf-right">🌿</span>
+              <span className="heart">💖</span>
+            </div>
+            {/* ดึงรูปน้องนอนหลับปุ๋ยจากโฟลเดอร์โปรเจกต์คุณหมอ */}
             <img 
-              src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/main/Emojis/People/Baby.png" 
-              alt="Baby" 
+              src="/image_60.png" 
+              alt="Baby sleeping in womb" 
+              className="baby-womb-img"
+              onError={(e) => {
+                // กันเหนียวถ้ารูปไม่ขึ้น ให้ใช้ URL สากลแทนครับ
+                e.currentTarget.src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/main/Emojis/People/Baby.png";
+              }}
             />
           </div>
-        </div>
 
-        {/* ส่วนเลือกความแรงและมื้ออาหาร */}
-        <div className="card">
-          <span className="selector-label">ความแรงของการดิ้น</span>
-          <div className="intensity-grid">
-            {[
-              { emoji: "🌱", text: "เบามาก" },
-              { emoji: "⭐", text: "เบา" },
-              { emoji: "✨", text: "พอดี" },
-              { emoji: "💪", text: "แรง" },
-              { emoji: "🔥", text: "แรงมาก" }
-            ].map((item) => (
-              <div
-                key={item.text}
-                className={`intensity-item ${intensity === item.text ? "active" : ""}`}
-                onClick={() => setIntensity(item.text)}
-              >
-                <span className="emoji">{item.emoji}</span>
-                <span className="text">{item.text}</span>
-              </div>
-            ))}
-          </div>
+          {/* ฟอร์มเลือกช่วงเวลาด้านล่าง */}
+          <div className="control-sheet">
+            <h3 className="sheet-title">⏱️ ช่วงเวลาที่นับลูกดิ้น</h3>
+            <div className="selector-grid">
+              {["เช้า", "กลางวัน", "เย็น"].map((slot) => (
+                <button
+                  key={slot}
+                  className={`select-btn ${mealSlot === slot ? "active" : ""}`}
+                  onClick={() => setMealSlot(slot)}
+                >
+                  มื้อ{slot}
+                </button>
+              ))}
+            </div>
 
-          <span className="selector-label" style={{ marginTop: "20px" }}>
-            ช่วงเวลามื้ออาหาร
-          </span >
-          <div className="meal-grid">
-            {[
-              { label: "🌅 เช้า", value: "เช้า" },
-              { label: "☀️ กลางวัน", value: "กลางวัน" },
-              { label: "🌙 เย็น", value: "เย็น" }
-            ].map((item) => (
-              <div
-                key={item.value}
-                className={`meal-item ${mealSlot === item.value ? "active" : ""}`}
-                onClick={() => setMealSlot(item.value)}
-              >
-                {item.label}
-              </div>
-            ))}
+            <h3 className="sheet-title" style={{ marginTop: "15px" }}>✨ ความแรง</h3>
+            <div className="selector-grid intensity-grid">
+              {["เบา", "พอดี", "แรง"].map((level) => (
+                <button
+                  key={level}
+                  className={`select-btn ${intensity === level ? "active" : ""}`}
+                  onClick={() => setIntensity(level)}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
+      )}
 
-        {/* สถิติแยกตามมื้ออาหาร */}
-        <div className="card">
-          <h3 className="stats-title">📊 สรุปรูปแบบการดิ้น</h3>
-          <div className="chart-container">
-            {[
-              { label: "🌅 เช้า", count: morningCount },
-              { label: "☀️ กลางวัน", count: afternoonCount },
-              { label: "🌙 เย็น", count: eveningCount }
-            ].map((row) => (
-              <div key={row.label} className="chart-row">
-                <div className="chart-label">{row.label}</div>
-                <div className="chart-bar-bg">
-                  <div
-                    className="chart-bar-fill"
-                    style={{ width: `${(row.count / maxMealCount) * 100}%` }}
-                  ></div>
-                  <span className="chart-value">{row.count} ครั้ง</span>
-                </div>
-              </div>
-            ))}
+      {/* หน้าสอง: สรุปผล */}
+      {currentTab === "สรุปผล" && (
+        <div className="tab-content">
+          <div className="control-sheet" style={{ marginTop: "20px" }}>
+            <h3 className="sheet-title">📊 สรุปการดิ้นแยกตามมื้อ</h3>
+            <div className="report-row">🌅 มื้อเช้า: <strong>{getMealCount("เช้า")} ครั้ง</strong></div>
+            <div className="report-row">☀️ มื้อกลางวัน: <strong>{getMealCount("กลางวัน")} ครั้ง</strong></div>
+            <div className="report-row">🌙 มื้อเย็น: <strong>{getMealCount("เย็น")} ครั้ง</strong></div>
+          </div>
+
+          <div className="control-sheet" style={{ marginTop: "15px" }}>
+            <h3 className="sheet-title">👶🏻 ประวัติการดิ้นวันนี้</h3>
+            <div className="history-list">
+              {kicks.length === 0 ? (
+                <p className="empty-text">ยังไม่มีบันทึกของวันนี้</p>
+              ) : (
+                kicks.map((k) => (
+                  <div key={k.id} className="history-item">
+                    <span>⏰ เวลา {k.time} น.</span>
+                    <span>มื้อ{k.mealSlot} ({k.intensity})</span>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
+      )}
 
-        {/* ประวัติการกดดิ้นล่าสุด */}
-        <div className="card">
-          <h3 className="stats-title">👶🏻 ลูกดิ้นวันนี้</h3>
-          <div className="history-list">
-            {kicks.length === 0 ? (
-              <div style={{ textAlign: "center", color: "#8a7a82", fontSize: "13px", padding: "10px 0" }}>
-                ยังไม่มีข้อมูลการดิ้นของวันนี้
-              </div>
-            ) : (
-              kicks.map((kick) => (
-                <div key={kick.id} className="history-item">
-                  <span>⏰ เวลา {kick.time} น.</span>
-                  <span>
-                    มื้อ {kick.mealSlot} ({kick.intensity})
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
+      {/* แถบเมนูด้านล่างสุด (Bottom Navigation) */}
+      <div className="bottom-nav">
+        <div 
+          className={`nav-item ${currentTab === "บันทึก" ? "active" : ""}`}
+          onClick={() => setCurrentTab("บันทึก")}
+        >
+          <span className="nav-icon">📝</span>
+          <span className="nav-text">บันทึก</span>
         </div>
-
-        {/* ชาร์ตจำลองสถิติย้อนหลัง 7 วัน */}
-        <div className="card">
-          <h3 className="stats-title">📅 สถิติย้อนหลัง 7 วัน</h3>
-          <div className="week-chart-container">
-            {[
-              { day: "ส", h: 40 },
-              { day: "อา", h: 55 },
-              { day: "จ", h: 30 },
-              { day: "อ", h: 70 },
-              { day: "พ", h: 45 },
-              { day: "พฤ", h: 60 },
-              { day: "ศ", h: progressPercent, isToday: true }
-            ].map((item, idx) => (
-              <div key={idx} className="week-column">
-                <div className="week-bar-bg">
-                  <div
-                    className={`week-bar-fill ${item.isToday ? "today" : ""}`}
-                    style={{ height: `${item.h}%` }}
-                  ></div>
-                </div>
-                <span className={`week-label ${item.isToday ? "today" : ""}`}>{item.day}</span>
-              </div>
-            ))}
-          </div>
+        <div 
+          className={`nav-item ${currentTab === "สรุปผล" ? "active" : ""}`}
+          onClick={() => setCurrentTab("สรุปผล")}
+        >
+          <span className="nav-icon">📊</span>
+          <span className="nav-text">สรุปผล</span>
         </div>
       </div>
-    </>
+    </div>
   );
 }
+
+export default App;

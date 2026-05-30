@@ -1,4 +1,5 @@
 import { db } from "./firebase";
+console.log("Firebase db:", db);
 import {
   collection,
   addDoc,

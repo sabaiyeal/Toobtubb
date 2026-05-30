@@ -500,5 +500,5 @@ saveKick(newKick);
     onClose={() => {
       if (dueDate) setShowSetup(false);
     }}
-  />
+ </>
 )}

@@ -1,19 +1,23 @@
-Export default async function handler(req, res) {
+export default async function handler(req, res) {
+  // Line POST request
   if (req.method === 'POST') {
     try {
-      console.log('Line webhook received:', req.body);
-      
-      // ตอนนี้แค่ return 200 ก่อน
-      return res.status(200).json({ success: true });
+      console.log('Line webhook received:', JSON.stringify(req.body, null, 2));
+      res.status(200).json({ success: true });
     } catch (error) {
       console.error('Webhook error:', error);
-      return res.status(500).json({ error: 'Webhook failed' });
+      res.status(500).json({ error: 'Webhook failed' });
     }
+    return;
   }
   
+  // GET request (for testing)
   if (req.method === 'GET') {
-    return res.status(200).json({ message: 'Line webhook endpoint is working' });
+    res.status(200).json({ message: 'Line webhook endpoint is working' });
+    return;
   }
   
-  return res.status(405).json({ error: 'Method not allowed' });
+  // Method not allowed
+  res.status(405).json({ error: 'Method not allowed' });
 }
+

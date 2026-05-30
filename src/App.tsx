@@ -503,3 +503,5 @@ saveKick(newKick);
  />
 )}
     </>
+);
+}

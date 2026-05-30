@@ -1,4 +1,9 @@
-export default async function handler(req, res) {
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   // Line POST request
   if (req.method === 'POST') {
     try {
@@ -10,15 +15,13 @@ export default async function handler(req, res) {
     }
     return;
   }
-  
+
   // GET request (for testing)
   if (req.method === 'GET') {
     res.status(200).json({ message: 'Line webhook endpoint is working' });
     return;
   }
-  
+
   // Method not allowed
   res.status(405).json({ error: 'Method not allowed' });
 }
-
- 

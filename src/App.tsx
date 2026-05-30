@@ -488,16 +488,17 @@ saveKick(newKick);
         </div>
       )}
 
-      {showSetup && (
-        <SetupModal
-          onSave={saveDueDate}
-          onClose={() => {
-            if (dueDate) setShowSetup(false);
-          }}
-        />
-      )}
-
-    </>
-  );
-}
-
+{showSetup && (
+  <SetupModal
+    onSave={(date: string) => {
+      if (date) {
+        setDueDate(date);
+        saveDueDate(date);
+        setShowSetup(false);
+      }
+    }}
+    onClose={() => {
+      if (dueDate) setShowSetup(false);
+    }}
+  />
+)}

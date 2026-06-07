@@ -339,7 +339,7 @@ saveKick(newKick);
 
         <div className="header">
           <div className="header-title">
-            <div className="greeting">ตุ้บตั้บ ตุ้บตั้บ! 👶🏻</div>
+            <div className="greeting" style={{ fontFamily: "'Mitr', sans-serif" }}>ตุ๊บตั๊บ ตุ๊บตั๊บ! 👶🏻</div>
             <div className="subtitle">วันนี้เจ้าตัวน้อยดิ้นไปกี่ครั้งแล้วนะ 🤍</div>
           </div>
         </div>

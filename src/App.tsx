@@ -28,11 +28,11 @@ interface Floater {
   y: number;
 }
 
-function formatEnglishDate(date: Date): string {
-  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-  const day = String(date.getDate()).padStart(2, "0");
+function formatThaiDate(date: Date): string {
+  const months = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+  const day = date.getDate();
   const month = months[date.getMonth()];
-  const year = String(date.getFullYear()).slice(-2);
+  const year = (date.getFullYear() + 543) % 100;
   return `${day} ${month} ${year}`;
 }
 

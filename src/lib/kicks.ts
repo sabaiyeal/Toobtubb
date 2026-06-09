@@ -1,14 +1,14 @@
 import { db } from "./firebase";
-console.log("Firebase db:", db);
 import {
   collection,
   addDoc,
   getDocs,
   query,
   orderBy,
+  doc,
+  setDoc,
 } from "firebase/firestore";
 
-// userId ชั่วคราว — เดี๋ยว Step 2 จะทำ login จริงค่ะ
 function getUserId(): string {
   let id = localStorage.getItem("tubtub-user-id");
   if (!id) {
@@ -24,13 +24,11 @@ export interface Kick {
   meal?: string;
 }
 
-// บันทึกการดิ้น
 export async function saveKick(kick: Kick): Promise<void> {
   const userId = getUserId();
   await addDoc(collection(db, "users", userId, "kicks"), kick);
 }
 
-// โหลดประวัติทั้งหมด
 export async function loadKicks(): Promise<Kick[]> {
   const userId = getUserId();
   const q = query(
@@ -41,10 +39,9 @@ export async function loadKicks(): Promise<Kick[]> {
   return snapshot.docs.map((doc) => doc.data() as Kick);
 }
 
-// บันทึกวันกำหนดคลอด
 export async function saveDueDate(date: string): Promise<void> {
   const userId = getUserId();
-  await addDoc(collection(db, "users", userId, "settings"), {
+  await setDoc(doc(db, "users", userId, "settings", "dueDate"), {
     dueDate: date,
     updatedAt: new Date().toISOString(),
   });

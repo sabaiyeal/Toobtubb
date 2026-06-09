@@ -273,7 +273,7 @@ useEffect(() => {
   const kickBtnRef = useRef<HTMLButtonElement>(null);
 
   const today = new Date();
-  const dateStr = formatEnglishDate(today);
+  const dateStr = formatThaiDate(today);
   const ga = dueDate ? getGaFromDueDate(dueDate) : null;
 
   // Check if first-time user (no due date saved)
@@ -358,7 +358,7 @@ saveKick(newKick);
             <span>🤰</span>
             <span>
               {ga
-                ? `GA ${ga.weeks}w ${ga.days}d`
+                ? `${ga.weeks}+${ga.days} สัปดาห์`
                 : "ตั้งค่าอายุครรภ์"}
             </span>
           </div>

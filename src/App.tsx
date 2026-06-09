@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import "./index.css";
-import { saveKick, loadKicks, saveDueDate } from "./lib/kicks";
+import { saveKick, loadKicks, saveDueDate, logSession } from "./lib/kicks";
 
 const INTENSITY_LABELS = ["เบามาก", "เบา", "พอดี", "แรง", "แรงมาก"];
 const INTENSITY_EMOJIS = ["🍃", "⭐", "✨", "💪", "🔥"];
@@ -255,6 +255,7 @@ const [kicks, setKicks] = useState<Kick[]>([]);
 
 useEffect(() => {
   loadKicks().then(setKicks);
+  logSession();
 }, []);
 
   const [dueDate, setDueDate] = useState<string>(() => {

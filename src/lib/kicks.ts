@@ -35,16 +35,17 @@ export interface Kick {
   meal?: string;
 }
 
-export async function saveKick(kick: Kick): Promise<boolean> {
+export async function saveKick(kick: Kick): Promise<Kick | null> {
   try {
     const userId = await getUserId();
-    await addDoc(collection(db, "users", userId, "kicks"), kick);
-    return true;
+    const docRef = await addDoc(collection(db, "users", userId, "kicks"), kick);
+    return { ...kick, id: docRef.id };
   } catch (e) {
     console.error("saveKick failed:", e);
-    return false;
+    return null;
   }
 }
+
 
 export async function loadKicks(): Promise<Kick[]> {
   try {

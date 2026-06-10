@@ -332,6 +332,7 @@ export default function App() {
   const [floaters, setFloaters] = useState<Floater[]>([]);
   const [poseIndex, setPoseIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("record");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const kickBtnRef = useRef<HTMLButtonElement>(null);
 
   const today = new Date();
@@ -351,11 +352,15 @@ export default function App() {
     setShowSetup(false);
   }
 
-  async function handleDeleteKick(kickId: string) {
-  const confirmed = window.confirm("ลบรายการนี้ใช่ไหมคะ?");
-  if (!confirmed) return;
-  await deleteKick(kickId);
-  setKicks((prev) => prev.filter((k) => k.id !== kickId));
+async function handleDeleteKick(kickId: string) {
+  setConfirmDeleteId(kickId);
+}
+
+async function confirmDelete() {
+  if (!confirmDeleteId) return;
+  await deleteKick(confirmDeleteId);
+  setKicks((prev) => prev.filter((k) => k.id !== confirmDeleteId));
+  setConfirmDeleteId(null);
 }
 
   const todayKicks = kicks.filter((k) => {
@@ -560,6 +565,33 @@ saveKick(newKick).then((savedKick) => {
           }}
         />
       )}
+  {confirmDeleteId && (
+        <div className="modal-backdrop" onClick={() => setConfirmDeleteId(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}
+            style={{ borderRadius: 24, maxHeight: "none", padding: 24, textAlign: "center" }}>
+            <div style={{ fontSize: 32, marginBottom: 8 }}>🗑️</div>
+            <div style={{ fontWeight: 700, fontSize: 16, color: "#5a3e28", marginBottom: 8 }}>
+              ลบรายการนี้ใช่ไหมคะ?
+            </div>
+            <div style={{ fontSize: 13, color: "#a08060", marginBottom: 20 }}>
+              กดยืนยันเพื่อลบการบันทึกนี้ออก
+            </div>
+            <div style={{ display: "flex", gap: 12 }}>
+              <button onClick={() => setConfirmDeleteId(null)}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "1px solid #f0e0d0",
+                  background: "#fff8f4", color: "#a08060", fontWeight: 600, cursor: "pointer", fontSize: 14 }}>
+                ยกเลิก
+              </button>
+              <button onClick={confirmDelete}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "none",
+                  background: "#d9534f", color: "white", fontWeight: 600, cursor: "pointer", fontSize: 14 }}>
+                ลบเลย
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </>
   );
 }

@@ -243,6 +243,75 @@ function SetupModal({ onSave, onClose }: { onSave: (date: string) => void; onClo
     </div>
   );
 }
+function DayGroup({ date, kicks, onDelete }: {
+  date: string;
+  kicks: Kick[];
+  onDelete: (id: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const goalReached = kicks.length >= DAILY_GOAL;
+
+  return (
+    <div style={{ marginBottom: 8 }}>
+      <div
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "12px 16px",
+          background: "#fff8f4",
+          borderRadius: 12,
+          cursor: "pointer",
+          border: "1px solid #f0e0d0",
+        }}
+      >
+        <span style={{ fontWeight: 600, color: "#5a3e28", fontSize: 14 }}>{date}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 13, color: goalReached ? "#4caf50" : "#c96b9b", fontWeight: 600 }}>
+            {kicks.length} ครั้ง {goalReached ? "✅" : ""}
+          </span>
+          <span style={{ color: "#a08060", fontSize: 12 }}>{open ? "▲" : "▼"}</span>
+        </div>
+      </div>
+
+      {open && (
+        <div style={{ paddingLeft: 8, paddingRight: 8 }}>
+          {kicks.map((k, i) => {
+            const d = new Date(k.time);
+            return (
+              <div className="history-item" key={k.id || i}>
+                <div className="history-time">
+                  {d.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" })}
+                </div>
+                <div className="history-intensity">{INTENSITY_EMOJIS[k.intensity - 1]}</div>
+                <div>
+                  <div style={{ fontSize: 13, color: "#5a3e28", fontWeight: 500 }}>ระดับ {k.intensity}</div>
+                  <div className="history-label">{INTENSITY_LABELS[k.intensity - 1]}</div>
+                </div>
+                {k.id && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onDelete(k.id!); }}
+                    style={{
+                      marginLeft: "auto",
+                      background: "none",
+                      border: "none",
+                      fontSize: 16,
+                      cursor: "pointer",
+                      padding: "0 4px",
+                    }}
+                  >
+                    ❌
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function App() {
   const [kicks, setKicks] = useState<Kick[]>([]);
@@ -440,56 +509,39 @@ export default function App() {
         </div>
       </div>
 
-      {showHistory && (
-        <div className="modal-backdrop" onClick={() => setShowHistory(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-handle" />
-            <div className="modal-title">ประวัติการดิ้น 👣</div>
-            {kicks.length === 0 ? (
-              <div className="no-history">
-                ยังไม่มีบันทึก 🌸
-                <br />
-                กดปุ่มบันทึกเพื่อเริ่ม!
-              </div>
-            ) : (
-              [...kicks].reverse().map((k, i) => {
-                const d = new Date(k.time);
-                return (
-                  <div className="history-item" key={k.id || i}>
-                    <div className="history-time">
-                      {d.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" })}
-                    </div>
-                    <div className="history-intensity">{INTENSITY_EMOJIS[k.intensity - 1]}</div>
-                    <div>
-                      <div style={{ fontSize: 13, color: "#5a3e28", fontWeight: 500 }}>ระดับ {k.intensity}</div>
-                      <div className="history-label">{INTENSITY_LABELS[k.intensity - 1]}</div>
-                    </div>
-                    <div style={{ marginLeft: "auto", fontSize: 11, color: "#a08060" }}>
-                      {formatThaiDate(d)}
-                    </div>
-                    {k.id && (
-                      <button
-                        onClick={() => handleDeleteKick(k.id!)}
-                        style={{
-                          marginLeft: 8,
-                          background: "none",
-                          border: "none",
-                          fontSize: 16,
-                          cursor: "pointer",
-                          color: "#d9534f",
-                          padding: "0 4px",
-                        }}
-                      >
-                        ❌
-                      </button>
-                    )}
-                  </div>
-                );
-              })
-            )}
-          </div>
+{showHistory && (
+  <div className="modal-backdrop" onClick={() => setShowHistory(false)}>
+    <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-handle" />
+      <div className="modal-title">ประวัติการดิ้น 👣</div>
+      {kicks.length === 0 ? (
+        <div className="no-history">
+          ยังไม่มีบันทึก 🌸
+          <br />
+          กดปุ่มบันทึกเพื่อเริ่ม!
         </div>
+      ) : (
+        (() => {
+          const grouped = [...kicks].reverse().reduce((acc, k) => {
+            const dateKey = formatThaiDate(new Date(k.time));
+            if (!acc[dateKey]) acc[dateKey] = [];
+            acc[dateKey].push(k);
+            return acc;
+          }, {} as Record<string, Kick[]>);
+
+          return Object.entries(grouped).map(([date, dayKicks]) => (
+            <DayGroup
+              key={date}
+              date={date}
+              kicks={dayKicks}
+              onDelete={handleDeleteKick}
+            />
+          ));
+        })()
       )}
+    </div>
+  </div>
+)}
 
       {showSetup && (
         <SetupModal

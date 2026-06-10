@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import "./index.css";
-import { saveKick, loadKicks, saveDueDate, logSession } from "./lib/kicks";
+import { saveKick, loadKicks, saveDueDate, logSession, deleteKick } from "./lib/kicks";
 
 const INTENSITY_LABELS = ["เบามาก", "เบา", "พอดี", "แรง", "แรงมาก"];
 const INTENSITY_EMOJIS = ["🍃", "⭐", "✨", "💪", "🔥"];
@@ -17,6 +17,7 @@ const MEAL_SLOTS = [
 const DAILY_GOAL = 10;
 
 interface Kick {
+  id?: string;
   time: string;
   intensity: number;
   meal?: string;
@@ -56,13 +57,6 @@ function BabyImage({ isAnimating, currentPose }: { isAnimating: boolean; current
       className={`belly-svg ${isAnimating ? "kick-anim" : ""}`}
     />
   );
-}
-
-function getKicksInTimeSlot(kicks: Kick[], startHour: number, endHour: number): Kick[] {
-  return kicks.filter((k) => {
-    const hour = new Date(k.time).getHours();
-    return hour >= startHour && hour < endHour;
-  });
 }
 
 function KickGoalBar({ count }: { count: number }) {
@@ -251,18 +245,17 @@ function SetupModal({ onSave, onClose }: { onSave: (date: string) => void; onClo
 }
 
 export default function App() {
-const [kicks, setKicks] = useState<Kick[]>([]);
+  const [kicks, setKicks] = useState<Kick[]>([]);
 
-useEffect(() => {
-  loadKicks().then(setKicks);
-  logSession();
-}, []);
+  useEffect(() => {
+    loadKicks().then(setKicks);
+    logSession();
+  }, []);
 
   const [dueDate, setDueDate] = useState<string>(() => {
     return localStorage.getItem("kick-counter-duedate") || "";
   });
   const [showSetup, setShowSetup] = useState(false);
-
   const [selectedIntensity, setSelectedIntensity] = useState(3);
   const [selectedMeal, setSelectedMeal] = useState("breakfast");
   const [showHistory, setShowHistory] = useState(false);
@@ -276,7 +269,6 @@ useEffect(() => {
   const dateStr = formatThaiDate(today);
   const ga = dueDate ? getGaFromDueDate(dueDate) : null;
 
-  // Check if first-time user (no due date saved)
   useEffect(() => {
     const saved = localStorage.getItem("kick-counter-duedate");
     if (!saved) {
@@ -284,14 +276,16 @@ useEffect(() => {
     }
   }, []);
 
-  // Persist kicks to localStorage
+  function saveDueDateHandler(date: string) {
+    setDueDate(date);
+    saveDueDate(date);
+    setShowSetup(false);
+  }
 
-
-function saveDueDateHandler(date: string) {
-  setDueDate(date);
-  saveDueDate(date); 
-  setShowSetup(false);
-}
+  async function handleDeleteKick(kickId: string) {
+    await deleteKick(kickId);
+    setKicks((prev) => prev.filter((k) => k.id !== kickId));
+  }
 
   const todayKicks = kicks.filter((k) => {
     const d = new Date(k.time);
@@ -304,9 +298,9 @@ function saveDueDateHandler(date: string) {
   const last7DaysKicks = kicks.filter((k) => new Date(k.time) >= sevenDaysAgo);
 
   function handleKick(e: React.MouseEvent<HTMLButtonElement>) {
-const newKick: Kick = { time: new Date().toISOString(), intensity: selectedIntensity, meal: selectedMeal };
-setKicks((prev) => [...prev, newKick]);
-saveKick(newKick);
+    const newKick: Kick = { time: new Date().toISOString(), intensity: selectedIntensity, meal: selectedMeal };
+    setKicks((prev) => [...prev, newKick]);
+    saveKick(newKick);
     setPoseIndex((prev) => prev + 1);
     setIsAnimating(true);
     setTimeout(() => setIsAnimating(false), 400);
@@ -357,9 +351,7 @@ saveKick(newKick);
           >
             <span>🤰</span>
             <span>
-              {ga
-                ? `${ga.weeks}+${ga.days} สัปดาห์`
-                : "ตั้งค่าอายุครรภ์"}
+              {ga ? `${ga.weeks}+${ga.days} สัปดาห์` : "ตั้งค่าอายุครรภ์"}
             </span>
           </div>
         </div>
@@ -368,7 +360,6 @@ saveKick(newKick);
           {activeTab === "record" && (
             <>
               <KickGoalBar count={todayKicks.length} />
-
               <div className="baby-area">
                 <span className="deco star1">⭐</span>
                 <span className="deco star2">✦</span>
@@ -380,7 +371,6 @@ saveKick(newKick);
                 <span className="deco spark2">✦</span>
                 <BabyImage isAnimating={isAnimating} currentPose={poseIndex} />
               </div>
-
               <div className="card">
                 <div className="card-title">⏱ ช่วงเวลาที่นับลูกดิ้น</div>
                 <div className="meal-tabs">
@@ -405,7 +395,6 @@ saveKick(newKick);
                   ))}
                 </div>
               </div>
-
               <button className="kick-btn" ref={kickBtnRef} onClick={handleKick}>
                 <span className="kick-btn-heart">🤍</span>
                 <span className="kick-btn-text">บันทึก</span>
@@ -420,14 +409,11 @@ saveKick(newKick);
                 <div className="report-card-title">กิจกรรมรายสัปดาห์</div>
                 <WeeklyChart kicks={kicks} />
               </div>
-
               <div className="report-card">
                 <div className="report-card-title">ช่วงเวลาที่ดิ้นบ่อย (7 วันล่าสุด)</div>
                 <TimeSlotBars kicks={last7DaysKicks} />
               </div>
-
               <PatternSummary todayKicks={todayKicks} />
-
               <button className="kick-btn" onClick={() => setShowHistory(true)} style={{ marginTop: 4 }}>
                 <span>📜</span>
                 <span className="kick-btn-text">ดูประวัติทั้งหมด</span>
@@ -469,7 +455,7 @@ saveKick(newKick);
               [...kicks].reverse().map((k, i) => {
                 const d = new Date(k.time);
                 return (
-                  <div className="history-item" key={i}>
+                  <div className="history-item" key={k.id || i}>
                     <div className="history-time">
                       {d.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" })}
                     </div>
@@ -479,8 +465,24 @@ saveKick(newKick);
                       <div className="history-label">{INTENSITY_LABELS[k.intensity - 1]}</div>
                     </div>
                     <div style={{ marginLeft: "auto", fontSize: 11, color: "#a08060" }}>
-                      {formatEnglishDate(d)}
+                      {formatThaiDate(d)}
                     </div>
+                    {k.id && (
+                      <button
+                        onClick={() => handleDeleteKick(k.id!)}
+                        style={{
+                          marginLeft: 8,
+                          background: "none",
+                          border: "none",
+                          fontSize: 16,
+                          cursor: "pointer",
+                          color: "#d9534f",
+                          padding: "0 4px",
+                        }}
+                      >
+                        🗑️
+                      </button>
+                    )}
                   </div>
                 );
               })
@@ -489,20 +491,20 @@ saveKick(newKick);
         </div>
       )}
 
-{showSetup && (
-  <SetupModal
-    onSave={(date: string) => {
-      if (date) {
-        setDueDate(date);
-        saveDueDate(date);
-        setShowSetup(false);
-      }
-    }}
-    onClose={() => {
-      if (dueDate) setShowSetup(false);
-    }}
- />
-)}
+      {showSetup && (
+        <SetupModal
+          onSave={(date: string) => {
+            if (date) {
+              setDueDate(date);
+              saveDueDate(date);
+              setShowSetup(false);
+            }
+          }}
+          onClose={() => {
+            if (dueDate) setShowSetup(false);
+          }}
+        />
+      )}
     </>
-);
+  );
 }

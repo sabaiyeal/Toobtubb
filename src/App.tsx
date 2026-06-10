@@ -352,9 +352,11 @@ export default function App() {
   }
 
   async function handleDeleteKick(kickId: string) {
-    await deleteKick(kickId);
-    setKicks((prev) => prev.filter((k) => k.id !== kickId));
-  }
+  const confirmed = window.confirm("ลบรายการนี้ใช่ไหมคะ?");
+  if (!confirmed) return;
+  await deleteKick(kickId);
+  setKicks((prev) => prev.filter((k) => k.id !== kickId));
+}
 
   const todayKicks = kicks.filter((k) => {
     const d = new Date(k.time);
@@ -367,9 +369,10 @@ export default function App() {
   const last7DaysKicks = kicks.filter((k) => new Date(k.time) >= sevenDaysAgo);
 
   function handleKick(e: React.MouseEvent<HTMLButtonElement>) {
-    const newKick: Kick = { time: new Date().toISOString(), intensity: selectedIntensity, meal: selectedMeal };
-    setKicks((prev) => [...prev, newKick]);
-    saveKick(newKick);
+const newKick: Kick = { time: new Date().toISOString(), intensity: selectedIntensity, meal: selectedMeal };
+saveKick(newKick).then((savedKick) => {
+  if (savedKick) setKicks((prev) => [...prev, savedKick]);
+});
     setPoseIndex((prev) => prev + 1);
     setIsAnimating(true);
     setTimeout(() => setIsAnimating(false), 400);

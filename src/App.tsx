@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import "./index.css";
 import { saveKick, loadKicks, saveDueDate, logSession, deleteKick } from "./lib/kicks";
+import { ensureSignedIn } from "./lib/auth";
 
 const INTENSITY_LABELS = ["เบามาก", "เบา", "พอดี", "แรง", "แรงมาก"];
 const INTENSITY_EMOJIS = ["🍃", "⭐", "✨", "💪", "🔥"];

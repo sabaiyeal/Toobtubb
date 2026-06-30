@@ -315,10 +315,22 @@ function DayGroup({ date, kicks, onDelete }: {
 
 export default function App() {
   const [kicks, setKicks] = useState<Kick[]>([]);
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
-    loadKicks().then(setKicks);
-    logSession();
+    ensureSignedIn()
+      .then(() => {
+        setAuthReady(true);
+        return loadKicks();
+      })
+      .then((loaded) => {
+        if (loaded) setKicks(loaded);
+        logSession();
+      })
+      .catch((e) => {
+        console.error("Auth/load failed:", e);
+        setAuthReady(true); // still unblock UI even if auth fails
+      });
   }, []);
 
   const [dueDate, setDueDate] = useState<string>(() => {

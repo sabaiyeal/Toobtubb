@@ -10,21 +10,41 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import liff from "@line/liff";
-
 async function getUserId(): Promise<string> {
+  let source = "unknown";
+  let id = "";
   try {
     if (typeof liff !== "undefined" && liff.isLoggedIn()) {
       const profile = await liff.getProfile();
-      return profile.userId;
+      id = profile.userId;
+      source = "liff";
     }
   } catch (e) {
     console.warn("LIFF not available, falling back to localStorage");
   }
-  let id = localStorage.getItem("tubtub-user-id");
   if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("tubtub-user-id", id);
+    let stored = localStorage.getItem("tubtub-user-id");
+    if (!stored) {
+      stored = crypto.randomUUID();
+      localStorage.setItem("tubtub-user-id", stored);
+    }
+    id = stored;
+    source = "localStorage";
   }
+
+  // DEBUG: log to Firestore so we can inspect later
+  try {
+    await setDoc(doc(db, "debug_logs", `${Date.now()}_${Math.random().toString(36).slice(2,8)}`), {
+      userId: id,
+      source,
+      liffLoggedIn: typeof liff !== "undefined" ? liff.isLoggedIn() : "liff-undefined",
+      timestamp: new Date().toISOString(),
+      caller: new Error().stack?.split("\n")[2]?.trim() || "unknown",
+    });
+  } catch (e) {
+    console.warn("debug log failed", e);
+  }
+
   return id;
 }
 
